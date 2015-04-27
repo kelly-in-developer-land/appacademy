@@ -1,5 +1,3 @@
-require 'byebug'
-
 def range(start, finish)
   if finish < start
     []
@@ -9,7 +7,6 @@ def range(start, finish)
     ([] << start) + range(start + 1, finish)
   end
 end
-
 
 def array_sum_recursive(array)
   if array.length == 1
@@ -167,7 +164,6 @@ def subsets(set)
 
 end
 
-
 def merge(arr1, arr2)
   result = []
   until arr1.empty? && arr2.empty?
@@ -188,9 +184,6 @@ def merge(arr1, arr2)
   result
 end
 
-arr = [3,1,5,2,6,4]
-
-
 def merge_sort(array)
   if array.length <= 1
     array
@@ -200,26 +193,3 @@ def merge_sort(array)
     merge(merge_sort(left), merge_sort(right))
   end
 end
-
-p merge_sort(arr)
-
-
-
-
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
