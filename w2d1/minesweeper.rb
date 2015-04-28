@@ -5,6 +5,7 @@ require 'colorize'
 require 'yaml'
 
 class Board
+
   attr_reader :board
 
   def initialize
@@ -44,6 +45,7 @@ class Board
 end
 
 class Tile
+
   attr_reader :coordinates
 
   NEIGHBOR_CHANGES = [
@@ -73,8 +75,12 @@ class Tile
     @flagged
   end
 
-  def toggle_flag
-    @flagged = !@flagged
+  def inspect
+    "Coords: #{@coordinates}."
+    "Bombed: #{bombed?}."
+    "Flagged: #{flagged?}."
+    "Revealed: #{revealed?}."
+    "Neighbor bomb count: #{neighbors_bomb_count}."
   end
 
   def neighbors
@@ -120,13 +126,15 @@ class Tile
     n_count.to_s.send(symbol_hash[n_count])
   end
 
-  def inspect
-    "Coords: #{@coordinates},\n  Bombed: #{bombed?},\n  Flagged: #{flagged?},\n  Revealed: #{revealed?},\n  Neighbor bomb count: #{neighbors_bomb_count}."
+  def toggle_flag
+    @flagged = !@flagged
   end
+
 end
 
 class Game
-  MOVE_PROMPT = "Select 'r' for reveal, 'f' to toggle flag,\nand enter the column and row of the tile you want."
+  MOVE_PROMPT = "Select 'R' to reveal, or 'F' to toggle a flag.",
+                "Then enter the column and row of the tile."
   SAVED_FILE = 'minesweeper_save.yml'
 
   def initialize(board = nil)
@@ -137,46 +145,23 @@ class Game
     @game_over = false
   end
 
-  def run
-    until @game_over || @board.won? || @quit
-      render_board
-      choice, coords = move
-      case choice
-      when :q
-        @quit = true
-      when :s
-        save
-      when :r
-        reveal(coords)
-      when :f
-        flag(coords)
-      end
-    end
-
-    if @game_over
-      game_over
-    elsif @board.won?
-      won
-    else
-      puts "Quitter.".red
-    end
-  end
-
   def elapsed_time
     @current_time = Time.now
     "#{(@current_time - @start_time).round(1)} seconds elapsed".green
   end
 
-  def render_board
-    @board.board.each do |row|
-      rendered_row = row.map do |tile|
-        tile.symbol
-      end
-      puts rendered_row.join(' ')
-    end
+  def flag(coords)
+    tile = get_tile(coords)
+    tile.toggle_flag unless tile.revealed?
+  end
 
-    puts ''
-    puts elapsed_time
+  def game_over
+    puts "Hooray! You exploded with excitement! But you lost.".red
+    File.delete(SAVED_FILE) if File.exist?(SAVED_FILE)
+  end
+
+  def get_tile(coords)
+    @board.board[@board.length - 1 - coords.first][coords.last]
   end
 
   def move
@@ -192,28 +177,20 @@ class Game
     [choice, coords]
   end
 
-  def valid_move?(choice, coords)
-    return true if [:q, :s].include?(choice)
-    return true if valid_coords?(coords) && [:f, :r].include?(choice)
-    false
-  end
-
-  def valid_coords?(coords)
-    return false if coords.nil?
-    return false if coords.length != 2
-    within_range = Proc.new { |coord| (0...@board.length).include?(coord) }
-    return false unless coords.all?(&within_range)
-    true
-  end
-
   def prompt(prompt_string)
     puts prompt_string
     print "> "
     gets.chomp
   end
 
-  def get_tile(coords)
-    @board.board[@board.length - 1 - coords.first][coords.last]
+  def render_board
+    @board.board.each do |row|
+      rendered_row = row.map do |tile|
+        tile.symbol
+      end
+      puts rendered_row.join('  ')
+    end
+    puts elapsed_time
   end
 
   def reveal(coords)
@@ -224,15 +201,25 @@ class Game
       tile.reveal
     end
   end
-
-  def flag(coords)
-    tile = get_tile(coords)
-    tile.toggle_flag unless tile.revealed?
-  end
-
-  def game_over
-    puts "Hooray! You exploded with excitement! But you lost.".green
-    File.delete(SAVED_FILE) if File.exist?(SAVED_FILE)
+  
+  def run
+    until @game_over || @board.won? || @quit
+      render_board
+      choice, coords = move
+      case choice
+      when :q
+        @quit = true
+        puts "Quitter.".red
+        return
+      when :s
+        save
+      when :r
+        reveal(coords)
+      when :f
+        flag(coords)
+      end
+    end
+    @game_over ? game_over : won
   end
 
   def save
@@ -244,6 +231,20 @@ class Game
     puts "Do you want to quit? Y/N"
     print "> "
     @quit = gets.chomp.downcase == 'y'
+  end
+
+  def valid_coords?(coords)
+    return false if coords.nil?
+    return false if coords.length != 2
+    within_range = Proc.new { |coord| (0...@board.length).include?(coord) }
+    return false unless coords.all?(&within_range)
+    true
+  end
+
+  def valid_move?(choice, coords)
+    return true if [:q, :s].include?(choice)
+    return true if valid_coords?(coords) && [:f, :r].include?(choice)
+    false
   end
 
   def won
