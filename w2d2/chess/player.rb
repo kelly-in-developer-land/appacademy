@@ -20,6 +20,7 @@ class Player
       print "> "
       end_pos = gets.chomp
     end
+    
   end
 
   def is_valid?
