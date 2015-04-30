@@ -1,38 +1,95 @@
+require_relative 'board'
+require_relative 'invalidmoveerror'
 require 'colorize'
 
 class Piece
 
-  TOP_PAWN_MOVE_DIRECTIONS = [[1, 1], [1, -1]]
-  BOTTOM_PAWN_MOVE_DIRECTIONS = [[-1, 1], [-1, -1]]
-  KING_MOVE_DIRECTIONS = TOP_PAWN_MOVE_DIRECTIONS + BOTTOM_PAWN_MOVE_DIRECTIONS
+  # UP = -1
+  # DOWN = 1
+  # RIGHT = 1
+  # LEFT = -1
 
-  attr_reader :color, :status, :symbol
+  attr_reader :color, :status, :symbol, :kinged, :position, :board
 
-  def initialize(color, status)
-    @symbol = :♥
+  def initialize(color, board, position, kinged = false)
     @color = color
-    @status = status
+    @board = board
+    @position = position
+    @kinged = kinged
+    @symbol = :♥
   end
 
-  # any Piece can only move on its diagonals
-  # a pawn can only move ahead
-  # once a pawn gets to the end it becomes a @king
-  # a @king can move backwards or forwards
-
-  def perform_slide
+  def assess_vertical(end_pos)
+    return -1 if @position[0] > end_pos[0]
+    return 1 if @position[0] < end_pos[0]
+    # have to begin/end around a raise
+    raise InvalidMoveError.new
   end
 
-  def perform_jump
-    # should remove jumped piece from board
+  def assess_horizontal(end_pos)
+    return -1 if @position[1] > end_pos[1]
+    return 1 if @position[1] < end_pos[1]
+    # have to begin/end around a raise
+    raise InvalidMoveError.new
   end
 
-  def legal?
+  def legal_jump?(end_pos)
+    vertical = assess_vertical(end_pos)
+    horizontal = assess_horizontal(end_pos)
+
+    unless @kinged
+      return false if (@color == :yellow && vertical == 1)
+      return false if (@color == :red && vertical == -1)
+    end
+
+    test_board = @board.board_dup
+    return false unless test_board[end_pos].nil?
+    return false unless end_pos.all? { |pos| pos.between?(0, 7) }
+
+    jump_pos = [@position[0] + vertical, @position[1] + horizontal]
+    other_color = (@color == :yellow ? :red : :yellow)
+    return false unless @board[jump_pos].color == other_color
+
+    true
   end
 
-  def need_promotion?
+  def legal_sequence?(sequence)
+    # calls perform_moves! on a duped Piece/Board
+    # true if no error raised, else false
+    # use begin/rescue/else
   end
 
-  def move_dirs
+  def legal_slide?(end_pos)
+
+    vertical = assess_vertical(end_pos)
+    horizontal = assess_horizontal(end_pos)
+
+    unless @kinged
+      return false if (@color == :yellow && vertical == 1)
+      return false if (@color == :red && vertical == -1)
+    end
+
+    test_board = @board.board_dup
+    return false unless test_board[end_pos].nil?
+    return false unless end_pos.all? { |pos| pos.between?(0, 7) }
+
+    current_pos = [@position[0] + vertical, @position[1] + horizontal]
+    until current_pos == end_pos
+      current_pos = [current_pos[0] + vertical, current_pos[1] + horizontal]
+      return false unless test_board[current_pos].nil?
+      return false unless current_pos.all? { |pos| pos.between?(0, 7) }
+    end
+
+    true
+  end
+
+  # def move_dirs
+  # end
+
+  def perform_moves
+    # have to begin/end around a raise
+    raise InvalidMoveError.new unless legal_sequence?(sequence)
+    perform_moves!(sequence, board = @board.board_dup)
   end
 
   def perform_moves!(sequence)
@@ -44,16 +101,52 @@ class Piece
     # should not try to restore original board if sequence fails...
   end
 
-  def valid_move_sequence?
-    # calls perform_moves! on a duped Piece/Board
-    # true if no error raised, else false
-    # use begin/rescue/else
+  def perform_jump(end_pos)
+    vertical = assess_vertical(end_pos)
+    horizontal = assess_horizontal(end_pos)
+
+    # have to begin/end around a raise
+    raise InvalidMoveError.new unless legal_jump?(end_pos)
+    start_pos = @position
+    jump_pos = [start_pos[0] + vertical, start_pos[1] + horizontal]
+    @board[jump_pos] = nil
+
+    @position = end_pos
+    @board.update(self, start_pos, end_pos)
+    promote
   end
 
-  def perform_moves
-    # checks valid_move_sequence
-    # calls perform_moves! or raises error
+  def perform_slide(end_pos)
+    vertical = assess_vertical(end_pos)
+    horizontal = assess_horizontal(end_pos)
+
+    # have to begin/end around a raise
+    raise InvalidMoveError.new unless legal_slide?(end_pos)
+    current_pos = @position
+    until current_pos == end_pos
+      @position = current_pos
+      prev_pos = current_pos
+      current_pos = [current_pos[0] + vertical, current_pos[1] + horizontal]
+      @board.update(self, prev_pos, current_pos)
+    end
+
+    @position = end_pos
+    @board.update(self, prev_pos, end_pos)
+    promote
   end
+
+  def promote
+    @kinged = true if @color == :yellow && @position[0] == 0
+    @kinged = true if @color == :pink && @position[0] == 7
+  end
+
+  # def is_a_jump?(end_pos)
+  #   @position[0] + end_pos[0] ............... 1
+  # end
+  #
+  # def is_a_slide?(end_pos)
+  #   @position[0] + end_pos[0] ............... 1
+  # end
 
   def inspect
     @piece
