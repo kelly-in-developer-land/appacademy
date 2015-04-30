@@ -1,5 +1,4 @@
 class Bishop < SlidingPieces
-
   def symbol
     :B
   end
@@ -7,5 +6,4 @@ class Bishop < SlidingPieces
   def move_dirs
     moves(DIAGONAL)
   end
-
 end

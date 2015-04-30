@@ -1,11 +1,11 @@
 class Pieces
-  attr_reader :position, :board, :color
-  attr_accessor :moved
+  attr_reader  :board, :color
+  attr_accessor :moved, :position
 
-  def initialize(pos, board, color)
+  def initialize(pos, board, color, moved=false)
     @position = pos
     @board = board
-    @moved = false
+    @moved = moved
     @color = color
   end
 
@@ -23,13 +23,18 @@ class Pieces
     possible_moves.each do |move|
       temp_board = @board.board_dup
       temp_board.update(@position, move)
-      valid_moves << move unless temp_board.in_check?(@color)
+      unless temp_board.in_check?(@color)
+        valid_moves << move
+      end
     end
     valid_moves
   end
 
   def symbol
-    raise NotImplementedError.new
+    raise "Undefined."
   end
 
+  def piece_dup(duped_board)
+    self.class.new(@position.dup, duped_board, @color, @moved)
+  end
 end

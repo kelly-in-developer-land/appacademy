@@ -1,3 +1,4 @@
+require 'byebug'
 class SlidingPieces < Pieces
 
   ORTHOGONAL = [
@@ -18,8 +19,8 @@ class SlidingPieces < Pieces
     valid_moves_array = []
     directions.each do |coordinates|
       pos = [@position[0] + coordinates[0], @position[1] + coordinates[1]]
-      board_pos = @board[pos]
       while @board.on_board?(pos)
+        board_pos = @board[pos]
         unless board_pos.nil?
           valid_moves_array << pos unless board_pos.color == @color
           break
@@ -28,6 +29,7 @@ class SlidingPieces < Pieces
         pos = [pos[0] + coordinates[0], pos[1] + coordinates[1]]
       end
     end
+
     valid_moves_array
   end
 

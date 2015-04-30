@@ -1,6 +1,8 @@
 class Pawn < Pieces
-  WHITE = { :move => [-1,0], :capture => [[-1,-1], [-1,1]] }
+
+  WHITE = { :move => [-1, 0], :capture => [[-1,-1], [-1, 1]] }
   BLACK = { :move => [1, 0], :capture => [[1, 1], [1, -1]] }
+
   def symbol
     :P
   end
@@ -19,6 +21,7 @@ class Pawn < Pieces
       pos = [@position[0] + coordinates[0], @position[1] + coordinates[1]]
       board_pos = @board[pos]
       if @board.on_board?(pos)
+        board_pos = @board[pos]
         valid_move_set << pos unless board_pos.nil? || board_pos.color == @color
       end
     end
