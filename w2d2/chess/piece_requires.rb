@@ -1,3 +1,6 @@
+require_relative 'game'
+require_relative 'player'
+require_relative 'board'
 require_relative 'pieces'
 require_relative 'sliding_pieces'
 require_relative 'stepping_pieces'

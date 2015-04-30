@@ -201,7 +201,7 @@ class Game
       tile.reveal
     end
   end
-  
+
   def run
     until @game_over || @board.won? || @quit
       render_board
