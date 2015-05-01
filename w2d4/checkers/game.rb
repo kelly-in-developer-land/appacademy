@@ -11,34 +11,37 @@ class Game
     populate(:yellow, 5)
     @player_yellow = Player.new(:yellow)
     @player_pink = Player.new(:red)
-    @turn = @player_pink
+    @turn = @player_yellow
   end
 
   def play
     @board.display
     until (["Yellow", "Red"]).include?(winner)
-        @board.display
-        turn_switch
-        puts "#{player_name}'s turn!"
-        piece = nil
-      # begin
-        until piece && piece.color == @turn.color
-          start_pos, end_pos = @turn.take_turn
-          piece = @board[start_pos]
-          if piece.nil?
-            puts "There's no piece there!"
-            next
-          end
-          if piece.color != @turn.color
-            puts "That's not your piece!"
-            next
-          end
+      puts "#{player_name}'s turn!".colorize(:color => @turn.player_color)
+      piece = nil
+      until piece && piece.color == @turn.color
+        start_pos, end_pos = @turn.take_turn
+        piece = @board[start_pos]
+        if piece.nil?
+          puts "There's no piece there!"
+          next
         end
+        if piece.color != @turn.color
+          puts "That's not your piece!"
+          next
+        end
+      end
+
+      begin
         piece.perform_moves([end_pos])
-      # rescue InvalidMoveError => e
-      #   puts "Invalid move!"
-      #   retry
-      # end
+      rescue InvalidMoveError => e
+        system 'clear'
+        @board.display
+        puts "Invalid move!".red
+      else
+        turn_switch
+        @board.display
+      end
     end
     puts "Game over! #{winner} won!"
     # draw conditions!

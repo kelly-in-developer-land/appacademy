@@ -30,6 +30,10 @@ class Piece
   end
 
   def legal?(end_pos)
+    if end_pos.nil?
+      raise InvalidMoveError.new
+      return false
+    end
     vertical = assess_vertical(end_pos)
     horizontal = assess_horizontal(end_pos)
     # why can't the king move?
@@ -44,6 +48,7 @@ class Piece
     else
       jump_pos = [@position[0] + vertical, @position[1] + horizontal]
       other_color = (@color == :yellow ? :red : :yellow)
+      return false if @board[jump_pos].nil?
       return false unless @board[jump_pos].color == other_color
       return false if end_pos != [jump_pos[0] + vertical, jump_pos[1] + horizontal]
     end
@@ -85,17 +90,15 @@ class Piece
   end
 
   def perform_moves!(sequence)
-
     return single_move(sequence.shift) if sequence.length == 1
     current_pos = @position
     next_pos = sequence.shift
     until sequence.empty?
-      current_pos.single_move(next_pos)
+      raise IllegalMoveError unless current_pos.single_move(next_pos)
       current_pos = next_pos
     end
-    # do you need the board argument everywhere??
-    # if the sequence is one move long, try sliding before trying jumping
-    # should not try to restore original board if sequence fails
+
+    nil
   end
 
   def perform_jump(end_pos)
@@ -123,13 +126,15 @@ class Piece
   end
 
   def promote
-    @kinged = true if @color == :yellow && @position[0] == 0
-    @kinged = true if @color == :red && @position[0] == 7
-    @symbol = :♠ if @kinged
+    kingify = (@color == :yellow ? @position[0] == 0 : @position[0] == 7)
+    if kingify
+      @kinged = true
+      @symbol = :♠
+    end
   end
 
   def inspect
-    @piece
+    @symbol.colorize(:color => @color)
   end
 
 end
