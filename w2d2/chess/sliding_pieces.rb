@@ -1,4 +1,4 @@
-require 'byebug'
+require ''
 class SlidingPieces < Pieces
 
   ORTHOGONAL = [

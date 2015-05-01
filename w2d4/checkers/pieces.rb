@@ -22,131 +22,111 @@ class Piece
   def assess_vertical(end_pos)
     return -1 if @position[0] > end_pos[0]
     return 1 if @position[0] < end_pos[0]
-    # have to begin/end around a raise
-    raise InvalidMoveError.new
   end
 
   def assess_horizontal(end_pos)
     return -1 if @position[1] > end_pos[1]
     return 1 if @position[1] < end_pos[1]
-    # have to begin/end around a raise
-    raise InvalidMoveError.new
   end
 
-  def legal_jump?(end_pos)
+  def legal?(end_pos)
     vertical = assess_vertical(end_pos)
     horizontal = assess_horizontal(end_pos)
-
+    # why can't the king move?
     unless @kinged
       return false if (@color == :yellow && vertical == 1)
       return false if (@color == :red && vertical == -1)
     end
-
-    test_board = @board.board_dup
-    return false unless test_board[end_pos].nil?
+    return false unless @board[end_pos].nil?
     return false unless end_pos.all? { |pos| pos.between?(0, 7) }
-
-    jump_pos = [@position[0] + vertical, @position[1] + horizontal]
-    other_color = (@color == :yellow ? :red : :yellow)
-    return false unless @board[jump_pos].color == other_color
+    unless is_jump?(end_pos)
+      return false if end_pos != [@position[0] + vertical, @position[1] + horizontal]
+    else
+      jump_pos = [@position[0] + vertical, @position[1] + horizontal]
+      other_color = (@color == :yellow ? :red : :yellow)
+      return false unless @board[jump_pos].color == other_color
+      return false if end_pos != [jump_pos[0] + vertical, jump_pos[1] + horizontal]
+    end
 
     true
   end
 
   def legal_sequence?(sequence)
-    # calls perform_moves! on a duped Piece/Board
-    # true if no error raised, else false
-    # use begin/rescue/else
-  end
-
-  def legal_slide?(end_pos)
-
-    vertical = assess_vertical(end_pos)
-    horizontal = assess_horizontal(end_pos)
-
-    unless @kinged
-      return false if (@color == :yellow && vertical == 1)
-      return false if (@color == :red && vertical == -1)
-    end
-
-    test_board = @board.board_dup
-    return false unless test_board[end_pos].nil?
-    return false unless end_pos.all? { |pos| pos.between?(0, 7) }
-
-    current_pos = [@position[0] + vertical, @position[1] + horizontal]
-    until current_pos == end_pos
-      current_pos = [current_pos[0] + vertical, current_pos[1] + horizontal]
-      return false unless test_board[current_pos].nil?
-      return false unless current_pos.all? { |pos| pos.between?(0, 7) }
-    end
+    # begin
+      slides = []
+      sequence.each { |pos| slides << pos unless is_jump?(pos) }
+      if sequence.length > 1 && !slides.empty?
+        raise InvalidMoveError.new
+      end
+      test_board = @board.board_dup
+      test_me = test_board[self.position]
+      test_me.perform_moves!(sequence)
+    # rescue InvalidMoveError => e
+    #   puts "Invalid move for piece at #{@position}!"
+    #   retry
+    # end
 
     true
   end
 
-  # def move_dirs
-  # end
+  def perform_moves(sequence)
+    unless legal_sequence?(sequence)
+      raise InvalidMoveError.new
+    end
+    perform_moves!(sequence)
+  end
 
-  def perform_moves
-    # have to begin/end around a raise
-    raise InvalidMoveError.new unless legal_sequence?(sequence)
-    perform_moves!(sequence, board = @board.board_dup)
+  def is_jump?(to_pos)
+    @position[0] + 2 == to_pos[0] || @position[0] - 2 == to_pos[0]
+  end
+
+  def single_move(to_pos)
+    is_jump?(to_pos) ? perform_jump(to_pos) : perform_slide(to_pos)
   end
 
   def perform_moves!(sequence)
-    # sequence is one slide, or one+ jumps
-    # should perform moves one at a time
-    # raise InvalidMoveError if a sequence fails
+
+    return single_move(sequence.shift) if sequence.length == 1
+    current_pos = @position
+    next_pos = sequence.shift
+    until sequence.empty?
+      current_pos.single_move(next_pos)
+      current_pos = next_pos
+    end
+    # do you need the board argument everywhere??
     # if the sequence is one move long, try sliding before trying jumping
-    # if the sequence is multiple moves, every move must be a jump
-    # should not try to restore original board if sequence fails...
+    # should not try to restore original board if sequence fails
   end
 
   def perform_jump(end_pos)
     vertical = assess_vertical(end_pos)
     horizontal = assess_horizontal(end_pos)
-
-    # have to begin/end around a raise
-    raise InvalidMoveError.new unless legal_jump?(end_pos)
-    start_pos = @position
-    jump_pos = [start_pos[0] + vertical, start_pos[1] + horizontal]
+    unless legal?(end_pos)
+      raise InvalidMoveError.new
+    end
+    jump_pos = [@position[0] + vertical, @position[1] + horizontal]
     @board[jump_pos] = nil
-
+    @board.update(self, @position, end_pos)
     @position = end_pos
-    @board.update(self, start_pos, end_pos)
     promote
   end
 
   def perform_slide(end_pos)
     vertical = assess_vertical(end_pos)
     horizontal = assess_horizontal(end_pos)
-
-    # have to begin/end around a raise
-    raise InvalidMoveError.new unless legal_slide?(end_pos)
-    current_pos = @position
-    until current_pos == end_pos
-      @position = current_pos
-      prev_pos = current_pos
-      current_pos = [current_pos[0] + vertical, current_pos[1] + horizontal]
-      @board.update(self, prev_pos, current_pos)
+    unless legal?(end_pos)
+      raise InvalidMoveError.new
     end
-
+    @board.update(self, @position, end_pos)
     @position = end_pos
-    @board.update(self, prev_pos, end_pos)
     promote
   end
 
   def promote
     @kinged = true if @color == :yellow && @position[0] == 0
-    @kinged = true if @color == :pink && @position[0] == 7
+    @kinged = true if @color == :red && @position[0] == 7
+    @symbol = :♠ if @kinged
   end
-
-  # def is_a_jump?(end_pos)
-  #   @position[0] + end_pos[0] ............... 1
-  # end
-  #
-  # def is_a_slide?(end_pos)
-  #   @position[0] + end_pos[0] ............... 1
-  # end
 
   def inspect
     @piece

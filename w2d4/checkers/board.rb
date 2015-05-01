@@ -21,11 +21,9 @@ class Board
 
   def board_dup
     dup = Board.new
-
     piece_dup_proc = Proc.new do |piece|
-      dup[piece.position] = Piece.new(piece.color, self, [piece.position])
+      dup[piece.position] = Piece.new(piece.color, self, piece.position.dup)
     end
-
     find_pieces(:red).each &piece_dup_proc
     find_pieces(:yellow).each &piece_dup_proc
 
