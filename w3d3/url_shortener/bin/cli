@@ -8,14 +8,19 @@ if __FILE__ == $PROGRAM_NAME
   puts "What do you want to do?"
   puts "0. Create shortened URL."
   puts "1. Visit shortened URL."
-  command = gets.chomp
+  command = Integer(gets)
 
-  if command == '0'
-    puts "Type in your long url."
-    long_url = gets.chomp
-    short_url = ShortenedURL.create_for_user_and_long_url!(user, long_url)
-    puts "Short URL is: #{short_url.short_url}"
-  elsif command == '1'
+  if command == 0
+    begin
+      puts "Type in your long url."
+      long_url = gets.chomp
+      short_url = ShortenedURL.create_for_user_and_long_url!(user, long_url)
+      puts "Short URL is: #{short_url.short_url}"
+      rescue => e
+        puts "Error! #{e.message}"
+        retry
+    end
+  elsif command == 1
     puts "Type in the shortened URL."
     short_url = gets.chomp
     short_url_object = ShortenedURL.find_by(short_url: short_url)
