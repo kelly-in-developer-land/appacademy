@@ -3,6 +3,8 @@ class ShortenedURL < ActiveRecord::Base
   validates :short_url, presence: true, uniqueness: true
   validates :submitter_id, presence: true
 
+  validate :submitter_id, :max_submissions
+
   belongs_to(
     :submitter,
     class_name: 'User',
@@ -65,6 +67,13 @@ class ShortenedURL < ActiveRecord::Base
     visitors.count
   end
 
+  def max_submissions
+    user = User.find(submitter_id)
+    sub_count_last_min =
+      user.submitted_urls.where(["created_at > ?", 1.minutes.ago]).count
+    raise "You're submitting too many links!" unless sub_count_last_min < 5
 
+    true
+  end
 
 end
