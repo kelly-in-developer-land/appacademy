@@ -1,5 +1,5 @@
 class ShortenedURL < ActiveRecord::Base
-  validates :long_url, presence: true
+  validates :long_url, presence: true, length: { maximum: 60 }
   validates :short_url, presence: true, uniqueness: true
   validates :submitter_id, presence: true
 
@@ -50,7 +50,7 @@ class ShortenedURL < ActiveRecord::Base
     short_url = ShortenedURL.random_code
     ShortenedURL.create!(
       {long_url: long_url, short_url: short_url, submitter_id: user.id}
-    )
+      )
   end
 
   def num_clicks
