@@ -33,14 +33,36 @@ class Question < ActiveRecord::Base
     #
     # results
 
-    AnswerChoice.find_by_sql([<<-SQL, id])
-      SELECT answer_choices.*
-      FROM responses
-      LEFT OUTER JOIN answer_choices ON responses.answer_choice_id = answer_choices.id
-      LEFT OUTER JOIN questions ON questions.id = question_id
-      WHERE question_id = ?
+    # choices_with_counts = AnswerChoice.find_by_sql([<<-SQL, id])
+    #   SELECT answer_choices.*, COUNT(responses.id) AS response_count
+    #   FROM answer_choices
+    #   LEFT OUTER JOIN responses ON responses.answer_choice_id = answer_choices.id
+    #   WHERE question_id = ?
+    #   GROUP BY answer_choices.id
+    # SQL
 
-    SQL
+    # choices_with_counts = AnswerChoice.find_by_sql([<<-SQL, id])
+    #   SELECT answer_choices.*, COUNT(responses.id) AS response_count
+    #   FROM answer_choices
+    #   LEFT OUTER JOIN responses ON responses.answer_choice_id = answer_choices.id
+    #   WHERE question_id = ?
+    #   GROUP BY answer_choices.id
+    # SQL
+
+    choices_with_counts = self.answer_choices
+      .select("answer_choices.*, COUNT(responses.id) AS response_count")
+      .joins(<<-SQL).group("answer_choices.id")
+        LEFT OUTER JOIN responses
+        ON answer_choices.id = responses.answer_choice_id
+      SQL
+
+      outcome = {}
+      choices_with_counts.each do |choice|
+        outcome[choice.text] = choice.response_count
+      end
+
+      outcome
+
   end
 
 end
