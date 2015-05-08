@@ -42,22 +42,9 @@ class User
     QuestionLikes.liked_questions_for_user_id(@id)
   end
 
-  # def average_karma_ruby_sql
-  #   total = 0
-  #   user_questions = Question.find_by_author_id(@id)
-  #   user_questions.each do |question|
-  #     total += QuestionLikes.num_likes_for_question_id(question.id)
-  #   end
-  #
-  #   total / user_questions.count
-  # end
-
-  def average_karma_sql
-
+  def average_karma
     user = @id
-
     results = QuestionsDatabase.instance.execute(<<-SQL, user)
-
       SELECT
         COUNT(DISTINCT(question_id)), CAST(COUNT(likes) AS FLOAT)
       FROM
@@ -68,22 +55,15 @@ class User
         questions.user_id = ?
       GROUP BY
         likes
-
     SQL
 
     likes, questions = results.first[1], results.first[0]
     likes / questions
-
   end
-
-  def save
-
-  end
-
 
 end
 
 if __FILE__ == $PROGRAM_NAME
   u = User.find_by_id(2)
-  p u.average_karma_sql
+  p u.average_karma
 end
