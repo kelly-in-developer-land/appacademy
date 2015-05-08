@@ -8,6 +8,7 @@
 
 User.create!(user_name: 'Aaron')
 User.create!(user_name: 'Kelly')
+User.create!(user_name: 'Dan')
 
 Poll.create!(title: 'Modes of transportation.',
                 author_id: User.find_by_user_name('Kelly').id)
@@ -19,4 +20,4 @@ AnswerChoice.create!(text: 'car', question_id:  1)
 AnswerChoice.create!(text: 'bus', question_id:  1)
 
 Response.create!(answer_choice_id: 1, user_id: 1)
-# Response.create!(answer_choice_id: 3, user_id: 1)
+Response.create!(answer_choice_id: 1, user_id: 3)
