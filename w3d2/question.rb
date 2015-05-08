@@ -52,47 +52,55 @@ class Question
     QuestionLikes.num_likes_for_question_id(@id)
   end
 
+  def attrs
+    vars = instance_variables.reject { |v| v == :@id if @id.nil? }
+    cols = vars.map { |var| var.to_s[1..-1].to_sym }
+    attrs = vars.map { |var| instance_variable_get(var) }
+    Hash[cols.zip(attrs)]
+  end
+
   def save
-    if @id.nil?
-      create
-      @id = QuestionsDatabase.instance.last_insert_row_id
-    else
-      update
-    end
+    @id.nil? ? create : update
   end
 
   def create
-    QuestionsDatabase.instance.execute(<<-SQL, title, body, user_id)
+    QuestionsDatabase.instance.execute(<<-SQL, attrs)
       INSERT INTO
         questions (title, body, user_id)
       VALUES
-        (?, ?, ?)
+        (:title, :body, :user_id)
     SQL
 
-    p "Created!"
+    @id = QuestionsDatabase.instance.last_insert_row_id
+    puts "Created!"
   end
 
   def update
-    id = @id
-
-    QuestionsDatabase.instance.execute(<<-SQL, title, body, user_id, id)
+    QuestionsDatabase.instance.execute(<<-SQL, attrs.merge({ id: id }))
       UPDATE
         questions
       SET
-        title = ?, body = ?, user_id = ?
+        title = :title, body = :body, user_id = :user_id
       WHERE
-        questions.id = ?
+        questions.id = :id
     SQL
 
-    p "Updated!"
+    puts "Updated!"
   end
+
 
 end
 
 if __FILE__ == $PROGRAM_NAME
+  # QuestionsDatabase.instance.execute(<<-SQL)
+  #   DELETE FROM
+  #     questions
+  #   WHERE
+  #     questions.id > 2
+  # SQL
   q = Question.find_by_id(2)
   q.save
+  kew = Question.find_by_id(3)
+  kew ||= Question.new({ 'title' => 'Smalltalk', 'body' => 'Blah blah weather, right?', 'user_id' => 1 })
+  kew.save
 end
-
-# results = QuestionsDatabase.instance.execute('SELECT * FROM questions')
-# question = results.create({ :title => 'Using BART', :body => 'Does anyone know how to use public transit?', :user_id =>1 })
