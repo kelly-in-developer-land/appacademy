@@ -4,19 +4,17 @@ require_relative '01_sql_object'
 module Searchable
   def where(params)
 
-    where_line = params.keys.map { |col| "#{col} = ?" }.join(" AND ")
-    search_terms = params.values
+    where_line = params.keys.map { |attr_name| "#{attr_name} = ?" }.join(" AND ")
 
-    search_results = DBConnection.execute(<<-SQL, *search_terms)
+    search_results = DBConnection.execute(<<-SQL, *params.values)
     SELECT
       *
     FROM
-      #{self.table_name}
+      #{table_name}
     WHERE
       #{where_line}
     SQL
 
-    return nil if search_results.nil?
     parse_all(search_results)
   end
 end
