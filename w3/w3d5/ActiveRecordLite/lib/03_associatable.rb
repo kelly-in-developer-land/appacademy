@@ -3,11 +3,7 @@ require 'active_support/inflector'
 
 # Phase IIIa
 class AssocOptions
-  attr_accessor(
-    :foreign_key,
-    :class_name,
-    :primary_key
-  )
+  attr_accessor :foreign_key, :class_name, :primary_key
 
   def model_class
     @class_name.constantize
@@ -49,7 +45,7 @@ module Associatable
     define_method(name) do
       f_key = o.send(:foreign_key)
       f_key_value = @attributes[f_key]
-      o.model_class.where({id: f_key_value}).first
+      o.model_class.where(id: f_key_value).first
     end
 
     assoc_options[name] = o
@@ -61,7 +57,7 @@ module Associatable
     define_method(name) do
       f_key = o.send(:foreign_key)
       f_key_value = @attributes[:id]
-      o.model_class.where({f_key => f_key_value})
+      o.model_class.where(f_key => f_key_value)
     end
   end
 

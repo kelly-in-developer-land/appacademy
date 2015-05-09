@@ -4,24 +4,24 @@ require 'active_support/inflector'
 class SQLObject
 
   def self.columns
-    whole_table = DBConnection.execute2(<<-SQL)
+    return @columns if @columns
+    names = DBConnection.execute2(<<-SQL).first
       SELECT
         *
       FROM
-        '#{self.table_name}'
+        #{table_name}
     SQL
-    col_names = whole_table.first.map { |col_name| col_name.to_sym }
+    col_names = names.map(&:to_sym)
+    @columns = col_names
   end
 
   def self.finalize!
-    columns.each do |col_name|
-      define_method("#{col_name}") do
-        # instance_variable_get("@#{col_name}")
-        self.attributes[col_name]
+    columns.each do |attr_name|
+      define_method("#{attr_name}") do
+        attributes[attr_name]
       end
-      define_method("#{col_name}=") do |value|
-        # instance_variable_set("@#{col_name}", value)
-        self.attributes[col_name] = value
+      define_method("#{attr_name}=") do |value|
+        attributes[attr_name] = value
       end
     end
   end
@@ -39,37 +39,41 @@ class SQLObject
       SELECT
         *
       FROM
-        '#{self.table_name}'
+        #{table_name}
     SQL
+
     parse_all(all_attrs)
   end
 
   def self.parse_all(results)
     results.map do |attrs_hash|
-      self.new(attrs_hash)
+      new(attrs_hash)
     end
   end
 
   def self.find(id)
     finder_query_result = DBConnection.execute2(<<-SQL, id)
       SELECT
-        *
+        #{table_name}.*
       FROM
-        '#{self.table_name}'
+        #{table_name}
       WHERE
-        id = ?
+        #{table_name}.id = ?
       LIMIT
         1
     SQL
     return nil if finder_query_result.length < 2
-    self.new(finder_query_result.last)
+
+    new(finder_query_result.last)
   end
 
   def initialize(params = {})
     @attributes = {}
-    params.each_pair do |k, v|
-      raise "unknown attribute '#{k}'" unless self.class.columns.include?(k.to_sym)
-      @attributes[k.to_sym] = v
+    params.each_pair do |attr_name, value|
+      unless self.class.columns.include?(attr_name.to_sym)
+        raise "unknown attribute '#{attr_name}'"
+      end
+      @attributes[attr_name.to_sym] = value
     end
   end
 
@@ -78,28 +82,15 @@ class SQLObject
   end
 
   def attribute_values
-    self.class.columns.map { |col| self.send(col) }
+    self.class.columns.map { |attr_name| self.send(attr_name) }
   end
 
   def insert
-    insertion_cols = ""
     cols = self.class.columns.drop(1)
-    cols.each do |col|
-      if col == cols.first
-        insertion_cols += col.to_s
-      else
-        insertion_cols += ", " + col.to_s
-      end
-    end
+    insertion_cols = cols.map(&:to_s).join(", ")
+    question_marks = [["?"]*cols.length].join(", ")
 
-    question_marks = ""
-    cols.length.times do
-      question_marks == "" ? question_marks += "?" : question_marks += ", ?"
-    end
-
-    v = attribute_values.drop(1)
-
-    DBConnection.execute(<<-SQL, *v)
+    DBConnection.execute(<<-SQL, *attribute_values.drop(1))
       INSERT INTO
         #{self.class.table_name} (#{insertion_cols})
       VALUES
@@ -111,18 +102,18 @@ class SQLObject
 
   def update
     set_line = self.class.columns.drop(1).map { |col| "#{col} = ?" }.join(", ")
-    v = attribute_values.drop(1)
-    DBConnection.execute(<<-SQL, *v)
+
+    DBConnection.execute(<<-SQL, *attribute_values.drop(1), id)
       UPDATE
         #{self.class.table_name}
       SET
         #{set_line}
       WHERE
-        id = #{@attributes[:id]}
+        id = ?
     SQL
   end
 
   def save
-    @attributes[:id].nil? ? insert : update
+    id.nil? ? insert : update
   end
 end
