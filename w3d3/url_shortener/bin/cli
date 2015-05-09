@@ -17,7 +17,7 @@ if __FILE__ == $PROGRAM_NAME
       short_url = ShortenedURL.create_for_user_and_long_url!(user, long_url)
       puts "Short URL is: #{short_url.short_url}"
       rescue => e
-        puts "Error! #{e.message}"
+         
         retry
     end
   elsif command == 1
