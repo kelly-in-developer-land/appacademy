@@ -10,11 +10,11 @@ class AssocOptions
   )
 
   def model_class
-    class_name.constantize
+    @class_name.constantize
   end
 
   def table_name
-    class_name.pluralize.underscore
+    model_class.table_name
   end
 end
 
@@ -23,7 +23,7 @@ class BelongsToOptions < AssocOptions
     @class_name = options[:class_name]
     @class_name ||= name.to_s.camelcase
     @foreign_key = options[:foreign_key]
-    @foreign_key ||= "#{table_name.singularize}_id".to_sym
+    @foreign_key ||= "#{name.to_s.singularize}_id".to_sym
     @primary_key = options[:primary_key]
     @primary_key ||= :id
   end
@@ -42,19 +42,34 @@ end
 
 module Associatable
   # Phase IIIb
+
   def belongs_to(name, options = {})
-    # ...
+    o = BelongsToOptions.new(name, options)
+
+    define_method(name) do
+      f_key = o.send(:foreign_key)
+      f_key_value = @attributes[f_key]
+      o.model_class.where({id: f_key_value}).first
+    end
+
+    assoc_options[name] = o
   end
 
   def has_many(name, options = {})
-    # ...
+    o = HasManyOptions.new(name, self.to_s, options)
+
+    define_method(name) do
+      f_key = o.send(:foreign_key)
+      f_key_value = @attributes[:id]
+      o.model_class.where({f_key => f_key_value})
+    end
   end
 
   def assoc_options
-    # Wait to implement this in Phase IVa. Modify `belongs_to`, too.
+    @assoc_options ||= {}
   end
 end
 
 class SQLObject
-  # Mixin Associatable here...
+  extend Associatable
 end
