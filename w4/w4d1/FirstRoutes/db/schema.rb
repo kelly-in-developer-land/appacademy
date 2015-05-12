@@ -11,7 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150511212532) do
+ActiveRecord::Schema.define(version: 20150512002422) do
+
+  create_table "comments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "contact_shares", force: :cascade do |t|
     t.integer  "contact_id", null: false

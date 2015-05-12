@@ -1,7 +1,7 @@
 require 'addressable/uri'
 require 'rest-client'
 
-def create_user
+def test_user
   url = Addressable::URI.new(
     scheme: 'http',
     host: 'localhost',
@@ -9,14 +9,36 @@ def create_user
     path: '/users/1.json'
   ).to_s
 
-  puts RestClient.delete(
-    url
-    # { user: { name: "Examplalalala" } }
+  puts RestClient.patch(
+    url,
+    { user: { username: 'User2' } }
   )
 end
 
-begin
-  create_user
-rescue RestClient::Exception => e
-  puts "#{e.message}"
+
+def test_contact
+  url = Addressable::URI.new(
+    scheme: 'http',
+    host: 'localhost',
+    port: 3000,
+    path: '/contacts/2.json'
+  ).to_s
+
+  puts RestClient.patch(
+    url,
+    { contact: { email: 'contact1@example.com' } }
+  )
 end
+
+test_contact
+
+# begin
+# rescue RestClient::Exception => e
+#   p e
+# end
+#
+# begin
+#   test_user
+# rescue RestClient::Exception => e
+#   puts "#{e.message}"
+# end
