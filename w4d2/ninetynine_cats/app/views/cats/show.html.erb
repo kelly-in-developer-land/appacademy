@@ -1,0 +1,30 @@
+<h1><%= @cat.name %></h1>
+
+<!-- <ul>
+  <li>Color: <%= @cat.color %></li>
+  <li>Age: <%= @cat.age %></li>
+  <li>Sex: <%= @cat.sex %></li>
+  <li>Life Story: <%= @cat.description %></li>
+</ul> -->
+
+<table>
+  <tr><td>Color:</td>
+    <td> <%= @cat.color %> </td>
+  </tr>
+  <tr><td>Age:</td>
+    <td> <%= @cat.age %> </td>
+  </tr>
+  <tr><td>Sex:</td>
+    <td> <%= @cat.sex %> </td>
+  </tr>
+  <tr><td>Life Story:</td>
+    <td> <%= @cat.description %> </td>
+  </tr>
+</table>
+
+<table>
+  <tr><th>Start Date</th><th>End date</th></tr>
+  <% @requests.each do |req| %>
+  <tr><td> <%= req.start_date %> </td><td> <%= req.end_date %> </td></tr>
+  <% end %>
+</table>
