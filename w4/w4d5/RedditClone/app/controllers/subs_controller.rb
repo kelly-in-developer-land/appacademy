@@ -31,7 +31,7 @@ class SubsController < ApplicationController
   end
 
   def show
-    @sub = Sub.all.includes(posts: [:comments]).find(params[:id])
+    @posts = Sub.find(params[:id]).posts.includes(:comments)
   end
 
   private
