@@ -1,12 +1,11 @@
 <ul>
 "<%= comment.content %>"
-<b><%= comment.commenter.name %></b>
-<% comment.comments.each do |comment| %>
-  <%= render "comment/comments", comment: comment %>
-<% end %>
+<b><%= comment.commenter.name %></b> <%= comment.commentable_type %>
 <small> <%= time_ago_in_words(comment.created_at) %> ago </small>
+<%= render 'shared/new_comment', url: comments_url, id: comment.id, type: "Comment", post_id: comment.post.id %>
 <br>
-<br>
-<%= render 'shared/new_comment', url: comments_url, id: comment.id, type: "Comment" %>
+<% comment.comments.each do |comment| %>
+  <%= render "comments/comment", comment: comment %>
+<% end %>
 <hr>
 </ul>

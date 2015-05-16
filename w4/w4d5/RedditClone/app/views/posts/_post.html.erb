@@ -3,11 +3,12 @@
   <br>
   <%= post.content %>
   <br>
-  <% post.comments.each do |comment| %>
-    <%= render "comment/comments", comment: comment %>
+  <% post.comments_by_parent_id.each do |p_id, comments| %>
+    <!-- <% if p_id == nil %> -->
+    <%= render "comments/comment", comment: comment %>
   <% end %>
   <br>
-  <%= render 'shared/new_comment', url: comments_url, id: post.id, type: "Post" %>
+  <%= render 'shared/new_comment', url: comments_url, id: post.id, type: "Post", post_id: post.id %>
   <hr>
   <br>
 <% end %>
