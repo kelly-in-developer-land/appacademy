@@ -1,0 +1,12 @@
+<ul>
+"<%= comment.content %>"
+<b><%= comment.commenter.name %></b>
+<% comment.comments.each do |comment| %>
+  <%= render "comment/comments", comment: comment %>
+<% end %>
+<small> <%= time_ago_in_words(comment.created_at) %> ago </small>
+<br>
+<br>
+<%= render 'shared/new_comment', url: comments_url, id: comment.id, type: "Comment" %>
+<hr>
+</ul>

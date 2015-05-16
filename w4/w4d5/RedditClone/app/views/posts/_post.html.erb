@@ -1,0 +1,13 @@
+<% posts.each do |post| %>
+  <b><%= post.title %></b>
+  <br>
+  <%= post.content %>
+  <br>
+  <% post.comments.each do |comment| %>
+    <%= render "comment/comments", comment: comment %>
+  <% end %>
+  <br>
+  <%= render 'shared/new_comment', url: comments_url, id: post.id, type: "Post" %>
+  <hr>
+  <br>
+<% end %>
