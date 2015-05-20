@@ -1,0 +1,8 @@
+<h1><%= @band.name %></h1>
+
+<p>
+<% @band.albums.each do |album| %>
+  <p><a href="<%= album_url(album) %>"><%= album.name %></a>
+<% end %>
+
+<%= render "shared/buttons", edit: edit_band_url(@band), delete: band_url(@band), up: bands_url, down: band_albums_url(@band), inner: "Album", create_inner: new_band_album_url(@band) %>

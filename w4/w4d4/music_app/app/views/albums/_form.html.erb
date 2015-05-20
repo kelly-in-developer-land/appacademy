@@ -1,0 +1,26 @@
+<form action="<%= url %>" method="<%= "POST" %>">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <% if form_method == "PATCH" %>
+    <input type="hidden" name="_method" value="<%= form_method %>">
+  <% end %>
+  <p>
+  <label for="album[band_id]">Band</label>
+  <select name="album[band_id]" value="current_band">
+    <% @bands.each do |band| %>
+      <option value="<%= band.id %>"> <%= band.name %> </option>
+    <% end %>
+  </select>
+
+  <p>
+  <label for="album[name]">Album Name</label>
+  <input type ="text" name="album[name]">
+  <p>
+  <input type="radio" name="album[set]" id="Studio">
+  <label for="album[set]">Studio</label>
+  <br>
+  <input type="radio" name="album[set]" id="Live">
+  <label for="album[set]">Live</label>
+  <p>
+  <p>
+  <input type="submit" name="Submit">
+</form>

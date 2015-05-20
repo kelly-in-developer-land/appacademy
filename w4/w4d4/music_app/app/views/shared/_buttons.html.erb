@@ -1,0 +1,9 @@
+<% unless current_user.nil? %>
+  <%= button_to "Edit", edit, method: :get %>
+  <%= button_to "Delete", delete, method: :delete %>
+  <%= button_to "Up One", up, method: :get %>
+  <!-- <#% if current page is a band or album page %> -->
+    <%= button_to "Down One", down, method: :get %>
+    <%= button_to "New #{inner}", create_inner, method: :get %>
+  <!-- <#% end %> -->
+<% end %>
