@@ -1,0 +1,21 @@
+User.create!(email: "snow@iwanttolive.com", password: "snowbird")
+User.create!(email: "dualla@popodo.com", password: "popodo")
+
+Band.create!(name: "The Birds")
+Band.create!(name: "The Labradoodles")
+Band.create!(name: "Spice Mice")
+
+Album.create!(name: "Pretty Birdies", set: "Live", band_id: 1)
+Album.create!(name: "Roo", set: "Studio", band_id: 2)
+Album.create!(name: "Roo Roo", set: "Live", band_id: 2)
+Album.create!(name: "Spice House", set: "Live", band_id: 3)
+
+Track.create!(title: "Sunrise Serenade", status: "Regular", album_id: 1)
+Track.create!(title: "We Want Breakfast", status: "Regular", album_id: 1)
+Track.create!(title: "Purring on Mama's Lap", status: "Bonus", album_id: 1)
+Track.create!(title: "I'm Adorable", status: "Regular", album_id: 2)
+Track.create!(title: "I'm Loud", status: "Regular", album_id: 2)
+Track.create!(title: "I'm Still Adorable", status: "Regular", album_id: 3)
+Track.create!(title: "I'm Marginally Better Behaved When Strangers Knock", status: "Bonus", album_id: 3)
+Track.create!(title: "Mice Don't Actually Sing", status: "Regular", album_id: 4)
+Track.create!(title: "They Sure are Talkative Though", status: "Regular", album_id: 4)

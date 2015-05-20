@@ -1,0 +1,12 @@
+<form action="<%= url %>" method="POST">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <% if form_method == "PATCH" %>
+    <input type="hidden" name="_method" value="<%= form_method %>">
+  <% end %>
+  <p>
+  <label for="note[body]">New Note</label>
+  <input type ="textarea" name="note[body]">
+  <p>
+  <p>
+  <input type="submit" name="Submit">
+</form>

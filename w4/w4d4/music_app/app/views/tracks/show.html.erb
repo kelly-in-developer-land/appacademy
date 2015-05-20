@@ -1,0 +1,10 @@
+<h1><%= @track.title %></h1>
+
+<%= render "notes/note", url: form_method: "POST"  %>
+
+<p>
+<% @track.notes.each do |note| %>
+<p><%= note.body %>
+<% end %>
+
+<%= render "shared/buttons", edit: edit_track_url(@track), delete: track_url(@track), up: album_url(@track.album), down: band_url(@track.band), inner: "Track", create_inner: new_album_track_url(@track.album) %>
