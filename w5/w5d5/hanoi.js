@@ -46,8 +46,6 @@ reader = readline.createInterface({
 
 HanoiGame.prototype.promptMove = function(callback) {
   this.print();
-  var start = null;
-  var end = null;
   var that = this;
   reader.question("Start tower: ", function (answer1) {
     reader.question("End tower: ", function (answer2) {
