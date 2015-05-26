@@ -6,7 +6,7 @@ if ( window.Asteroids === undefined ) {
 
 var MovingObject = Asteroids.MovingObject = function MovingObject(options) {
   var that = this;
-  Object.keys(options).forEach ( function (key) {
+  Object.keys(options).forEach(function (key) {
     that[key] = options[key];
   });
 };
@@ -28,10 +28,5 @@ MovingObject.prototype.isCollidedWith = function isCollidedWith(otherObject) {
   var distance = Asteroids.Util.distance(this.pos, otherObject.pos);
   var radiusSum = this.radius + otherObject.radius;
   return distance < radiusSum;
-}
-
-
-
-
-
+};
 })();
