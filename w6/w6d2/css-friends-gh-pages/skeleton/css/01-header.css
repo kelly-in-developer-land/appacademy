@@ -1,0 +1,19 @@
+/* PHASE 1: Header */
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+nav {
+  background: #f00;
+}
+
+nav li {
+  border-left: 1px solid white;
+  padding: 5px;
+  float: right;
+}
+
+.logo {
+  float: left;
+}
