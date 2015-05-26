@@ -25,10 +25,10 @@
   Game.prototype.addAsteroids = function addAsteroids(num) {
     for (var i = 0; i < num; i++){
       this.asteroids.push(
-        new Asteroids.Asteroid(
-          { game: this,
-            pos: Game.randomPos() }
-        )
+        new Asteroids.Asteroid({
+          game: this,
+          pos: Game.randomPos()
+        })
       );
     }
   };
@@ -38,18 +38,19 @@
   };
 
   Game.prototype.checkCollisions = function checkCollisions() {
-    var a = this.asteroids;
-    var b = this.bullets;
-    for (var i = 0; i < a.length; i++) {
-      if (a[i].isCollidedWith(this.ship)) {
+    var asteroids = this.asteroids;
+    var bullets = this.bullets;
+    for (var a = 0; a < asteroids.length; a++) {
+      if (asteroids[a].isCollidedWith(this.ship)) {
         this.ship.relocate();
       }
-      for (var j = 0; j < b.length; j++) {
-        if (a[i].isCollidedWith(b[j])) {
-          this.asteroids.splice(i, 1);
-          i--;
-          this.bullets.splice(j, 1);
-          j--;
+      for (var b = 0; b < bullets.length; b++) {
+        if (asteroids[a].isCollidedWith(bullets[b])) {
+          this.asteroids.splice(a, 1);
+          a--;
+          this.bullets.splice(b, 1);
+          b--;
+          break;
         }
       }
     }

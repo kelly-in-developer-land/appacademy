@@ -19,10 +19,11 @@ Asteroids.Util.inherits(Ship, Asteroids.MovingObject);
 
 Ship.prototype.fireBullet = function fireBullet() {
   var ship = this;
+  var direction = Asteroids.Util.direction(ship.vel);
   var bullet = new Asteroids.Bullet(
     { game: ship.game,
-      vel: [ship.vel[0] * Asteroids.Bullet.SPEED + 1,
-          ship.vel[1] * Asteroids.Bullet.SPEED],
+      vel: [direction[0] * Asteroids.Bullet.SPEED + ship.vel[0],
+          direction[1] * Asteroids.Bullet.SPEED + ship.vel[1]],
       pos: ship.pos
     });
   this.game.bullets.push(bullet);

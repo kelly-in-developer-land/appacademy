@@ -4,10 +4,9 @@ if ( window.Asteroids === undefined ) {
   window.Asteroids = {};
 }
 
-
 var Asteroid = Asteroids.Asteroid = function Asteroid(options) {
   options['color'] = Asteroid.COLOR;
-  options['radius'] = Asteroid.RADIUS;
+  options['radius'] = Asteroid.RADII[Math.floor( Math.random() * 3 )];
   options['vel'] = Asteroids.Util.randomVec(Asteroid.SPEED);
   Asteroids.MovingObject.call(this, options);
 };
@@ -15,7 +14,6 @@ var Asteroid = Asteroids.Asteroid = function Asteroid(options) {
 Asteroids.Util.inherits(Asteroid, Asteroids.MovingObject);
 
 Asteroid.COLOR = '#808080';
-Asteroid.RADIUS = 30;
+Asteroid.RADII = [20, 30, 40, 50];
 Asteroid.SPEED = 5;
-
 })();

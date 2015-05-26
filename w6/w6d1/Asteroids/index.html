@@ -6,14 +6,16 @@
 
     <style>
       html, body, canvas {
-        padding: 0px;
-        margin: 0px;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
       }
     </style>
   </head>
 
   <body>
     <canvas id="game-canvas"></canvas>
+    <audio id="shoot-sound" src="./Laser.mp3"></audio>
 
     <script src="./keymaster-master/keymaster.js"></script>
 
@@ -29,8 +31,9 @@
       var canvasEl = document.getElementById("game-canvas");
       canvasEl.height = window.innerHeight;
       canvasEl.width = window.innerWidth;
+      var shootSound = document.getElementById("shoot-sound");
       var game = new Asteroids.Game();
-      new Asteroids.GameView(game, canvasEl.getContext("2d")).start();
+      new Asteroids.GameView(game, canvasEl.getContext("2d"), shootSound).start();
     </script>
   </body>
 </html>
