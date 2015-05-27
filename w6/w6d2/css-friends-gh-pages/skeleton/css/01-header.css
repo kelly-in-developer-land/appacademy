@@ -4,16 +4,51 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-nav {
+header {
+  display: block;
+  width: 100%;
   background: #f00;
+  color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
-nav li {
-  border-left: 1px solid white;
-  padding: 5px;
-  float: right;
+.header-nav {
+  display: block;
+  width: 900px;
+  margin: 0 auto;
 }
 
-.logo {
+.header-logo:hover, .header-list li:hover {
+  display: block;
+  background: black;
+}
+
+.header-logo {
   float: left;
+  margin: 0 auto;
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+  font-weight: 600;
 }
+
+.header-list {
+  float:right;
+  border-left: 1px solid #eee;
+}
+
+.header-list li {
+  float: left;
+  border-right: 1px solid #eee;
+}
+
+
+.header-nav a {
+  display: block;
+  padding: 10px 20px;
+  position: relative;
+}
+
+/*.header-logo a, .list-container li {
+  background: #f00;
+}*/
