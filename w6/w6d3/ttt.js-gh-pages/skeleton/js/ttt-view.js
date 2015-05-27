@@ -32,6 +32,9 @@
       that.game.playMove(pos);
       $(event.currentTarget).text(that.game.currentPlayer)
         .addClass("marked");
+      if (game.isOver()) {
+        alert("Game Over!");
+      }
     });
   };
 
