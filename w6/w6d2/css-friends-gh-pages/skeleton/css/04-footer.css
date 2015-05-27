@@ -1,1 +1,36 @@
 /* PHASE 4: Footer */
+
+footer {
+  display: block;
+  width: 888px;
+  margin: 0 auto;
+  background: white;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow: hidden;
+  padding: 0px 5px;
+}
+
+.footer-list {
+  float:right;
+}
+
+.footer-list li {
+  float: left;
+  padding: 20px 10px;
+}
+
+.copyright {
+  float: left;
+  padding: 20px 10px;
+}
+
+footer a, .copyright {
+  display: block;
+  position: relative;
+  color: #aaa;
+  font-size: 14px;
+}
