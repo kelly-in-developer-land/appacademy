@@ -22,6 +22,6 @@
 
   var $firstTab = $("div.tab-pane").first();
   $firstTab.addClass("active");
-  $($("a").attr("href")).addClass("active");
+  // $($("a").attr("href")).addClass("active");
 
 })();
