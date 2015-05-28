@@ -1,3 +1,11 @@
+// things we could do:
+// add apples and augment snake length when apple hit;
+// make it fail if you hit yourself;
+// keep score;
+// pause and restart game;
+// either fail or redirect on wall hit;
+// leaderboard;
+
 (function() {
 
   if (typeof SnakeGame === "undefined") {
@@ -11,13 +19,16 @@
     this.buildBoard();
     this.bindEvents();
     this.step();
+    this.board.addApple();
   };
 
+  GRID = 20
+
   View.prototype.buildBoard = function() {
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < GRID; i++) {
       var $row = $("<div>").addClass("row").addClass("group");
       this.grid.append($row);
-      for (var j = 0; j < 50; j++) {
+      for (var j = 0; j < GRID; j++) {
         var position = i + "-" + j;
         $row.append($("<div>").addClass("square").attr("id", position));
       }
@@ -50,6 +61,6 @@
       that.snake.move();
       var grid = that.grid;
       that.board.render();
-    }, 500);
+    }, 100);
   };
 })();
