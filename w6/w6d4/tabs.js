@@ -1,26 +1,20 @@
 $.Tabs = function (el) {
   this.$el = $(el);
   this.$contentTabs = $(this.$el.attr("data-content-tabs"));
-  this.$activeTab = $("#content-tabs .active");
-  this.$activeAnchor = $("a#" + this.$activeTab.attr("id"));
-  this.clickTab.call(this);
-  // this.$el.on("click", "a", this.clickTab(event));
+  this.$activeTab = $("div.tab-pane.active");
+  this.$activeAnchor = $("a#" + this.$activeTab.attr("id")).addClass("active");
+  this.$el.on("click", "a", function (event) { this.clickTab(event); }.bind(this));
 };
 
-$.Tabs.prototype.clickTab = function () {
-  this.$el.on("click", "a", function (event) {
-
+$.Tabs.prototype.clickTab = function (event) {
   event.preventDefault();
   this.$activeTab.removeClass("active");
   this.$activeAnchor.removeClass("active");
   var tab = $(event.currentTarget).attr("id");
-  $("a#" + tab).addClass("active");
-  var $newActiveTab = $("div.tab-pane#" + tab);
-  $newActiveTab.addClass("active");
+  var $newActiveAnchor = $("a#" + tab).addClass("active");
+  var $newActiveTab = $("div.tab-pane#" + tab).addClass("active");
   this.$activeTab = $newActiveTab;
-
-}.bind(this));
-
+  this.$activeAnchor = $newActiveAnchor;
 };
 
 $.fn.tabs = function () {
