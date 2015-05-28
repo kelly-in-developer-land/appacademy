@@ -26,7 +26,7 @@
 
   View.prototype.bindEvents = function() {
     var that = this;
-    $(".square").keydown(function(event) {
+    $(window).keydown(function(event) {
       switch (event.which) {
         case 40:
           that.snake.dir = "S";
