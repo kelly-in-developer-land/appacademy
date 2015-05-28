@@ -1,0 +1,42 @@
+div.tab-pane.transitioning {
+  display: block;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+
+.tabs a {
+  float: left;
+  padding: 5px;
+  border: 2px solid white;
+  border-bottom: 4px solid white;
+  font-family: sans-serif;
+  font-weight: 200;
+  text-decoration: none;
+  color: white;
+  background: black;
+}
+
+.tabs a.active {
+  font-weight: bold;
+}
+
+div.tab-pane {
+  display: none;
+  padding: 10px 10px;
+  text-align: center;
+  margin: auto auto;
+  background: yellow;
+  font-family: sans-serif;
+}
+
+.tab-pane.active {
+  display: block;
+  opacity: 1;
+  transition: opacity .5s ease;
+}
+
+.group:after {
+  content: "";
+  clear: both;
+  display: block;
+}
