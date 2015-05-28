@@ -8,13 +8,20 @@ $.Tabs = function (el) {
 
 $.Tabs.prototype.clickTab = function (event) {
   event.preventDefault();
-  this.$activeTab.removeClass("active");
+  this.$activeTab.removeClass("active").addClass("transitioning");
   this.$activeAnchor.removeClass("active");
-  var tab = $(event.currentTarget).attr("id");
-  var $newActiveAnchor = $("a#" + tab).addClass("active");
-  var $newActiveTab = $("div.tab-pane#" + tab).addClass("active");
-  this.$activeTab = $newActiveTab;
+  var tab = $(event.currentTarget).attr("for");
+  var $newActiveAnchor = $("a" + tab).addClass("active");
   this.$activeAnchor = $newActiveAnchor;
+
+  var that = this;
+  that.$activeTab.one("transitionend", function (event) {
+    that.$activeTab.removeClass("transitioning");
+    that.$activeTab = $("div.tab-pane" + tab).addClass("active").addClass("transitioning");
+    setTimeout( function () {
+      that.$activeTab.removeClass("transitioning");
+    }, 0);
+  });
 };
 
 $.fn.tabs = function () {

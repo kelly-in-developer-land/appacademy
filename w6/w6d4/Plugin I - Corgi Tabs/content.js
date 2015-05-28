@@ -16,12 +16,11 @@
   };
 
   $(".tab-pane").each( function(i, el) {
-    $(el).append($("<p>").text(breed[i] + "s are wonderful.")).attr("id", breed[i].toLowerCase());
-    $("ul.tabs").append($("<li>").append($("<a>").attr("href", "#" + el.id).text(breed[i]).attr("id", breed[i].toLowerCase())));
+    $(el).text(breed[i] + "s are wonderful.").attr("id", breed[i].toLowerCase());
+    $("ul.tabs").append($("<li>").append($("<a>").attr("href", "javascript:void(0);").attr("for", "#" + el.id).text(breed[i])));
   });
 
   var $firstTab = $("div.tab-pane").first();
   $firstTab.addClass("active");
-  // $($("a").attr("href")).addClass("active");
 
 })();
