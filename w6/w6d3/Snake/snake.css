@@ -13,8 +13,8 @@ span, article, footer, time, small {
 #grid {
   margin: auto;
   margin-top: 100px;
-  width: 600px;
-  height: 600px;
+  width: 240px;
+  height: 240px;
   border: 5px solid black;
 }
 .row {
@@ -31,4 +31,8 @@ span, article, footer, time, small {
 
 .marked {
   background-color: black;
+}
+
+.apple {
+  background-color: red;
 }
