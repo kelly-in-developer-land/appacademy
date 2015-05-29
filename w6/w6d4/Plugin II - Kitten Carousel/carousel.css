@@ -1,0 +1,67 @@
+.carousel {
+  height: 650px;
+  width: 402px;
+  margin: auto auto;
+}
+
+.carousel div.items {
+  height: 600px;
+  position: relative;
+  margin: auto auto;
+  overflow: hidden;
+}
+
+.carousel div.items img {
+  display: none;
+  margin: auto auto;
+  float: left;
+  transition: left 500ms;
+}
+
+.carousel div.items .active {
+  display: inline-block;
+  left: 0%;
+}
+
+.carousel div.items .left {
+  display: inline-block;
+  position: absolute;
+  left: -100%;
+}
+
+.carousel div.items .right {
+  display: inline-block;
+  position: absolute;
+  left: 100%;
+}
+
+.sliders {
+  margin: auto auto;
+  width: 80px;
+}
+
+.sliders a {
+  color: white;
+  font-family: sans-serif;
+  padding: 3px;
+  text-decoration: none;
+  font-weight: 200;
+}
+
+.sliders .next {
+  background: black;
+  float: right;
+  margin: auto auto;
+}
+
+.sliders .prev {
+  background: black;
+  float: left;
+  margin: auto auto;
+}
+
+.group:after {
+  content: "";
+  clear: both;
+  display: block;
+}
