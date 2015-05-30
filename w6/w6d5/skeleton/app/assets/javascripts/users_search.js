@@ -6,6 +6,7 @@ $.UsersSearch = function (el) {
 };
 
 $.UsersSearch.prototype.handleInput = function () {
+  // currently requires click or enter, fix that
   var that = this;
   this.$input.on("change", function () {
     that.$ul.empty();
@@ -23,13 +24,11 @@ $.UsersSearch.prototype.handleInput = function () {
               }
            });
   });
-
 };
 
 
 $.fn.usersSearch = function () {
   return this.each(function () {
     var newUsersSearch = new $.UsersSearch(this);
-    // newUsersSearch.render();
   });
 };
