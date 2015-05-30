@@ -1,5 +1,5 @@
 <h2>New Tweet!</h2>
-<form action="/tweets" method="POST">
+<form class="tweet-compose" data-tweets-ul="#feed">
   <input
       type="hidden"
       name="authenticity_token"
@@ -24,3 +24,7 @@
 
   <input type="Submit" value="Post Tweet!">
 </form>
+
+<script>
+  $("form.tweet-compose").TweetCompose();
+</script>
