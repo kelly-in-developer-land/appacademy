@@ -2,11 +2,16 @@ window.Pokedex = (window.Pokedex || {});
 window.Pokedex.Models = {};
 window.Pokedex.Collections = {};
 
-Pokedex.Models.Pokemon = null; // WRITE ME
+Pokedex.Models.Pokemon = Backbone.Model.extend({
+  urlRoot: "/pokemon"
+});
 
 Pokedex.Models.Toy = null; // WRITE ME IN PHASE 2
 
-Pokedex.Collections.Pokemon = null; // WRITE ME
+Pokedex.Collections.Pokemon = Backbone.Collection.extend({
+  model: Pokedex.Models.Pokemon,
+  url: "/pokemon"
+});
 
 Pokedex.Collections.PokemonToys = null; // WRITE ME IN PHASE 2
 
