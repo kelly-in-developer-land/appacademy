@@ -1,12 +1,11 @@
 Pokedex.RootView.prototype.addPokemonToList = function (pokemon) {
-  var $li = $("<li>").text(pokemon.attributes.name+ ": " + pokemon.attributes.poke_type);
-  $li.addClass("poke-list-item");
+  var $li = $("<li>").text(pokemon.escape("name")+ ": " + pokemon.escape("poke_type"));
+  var pid = pokemon.id
+  $li.addClass("poke-list-item").data("id", pid);
   this.$pokeList.append($li);
 };
 
 Pokedex.RootView.prototype.refreshPokemon = function () {
-  var jolteon = new Pokedex.Models.Pokemon({ id: 1 });
-  this.pokes.add(jolteon)
   var pokemon = this.pokes.fetch({
     success: function (pokemon) {
       pokemon.each(this.addPokemonToList.bind(this));

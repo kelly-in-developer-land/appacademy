@@ -1,2 +1,7 @@
-json.(pokemon, :name, :attack, :defense, :poke_type, :moves, :image_url,
-  :created_at, :updated_at)
+json.(pokemon, :id, :name, :attack, :defense, :poke_type, :moves, :image_url)
+
+if display_toys
+  json.toys pokemon.toys.each do |toy|
+    json.partial!("toys/toy", toy: toy)
+  end
+end
