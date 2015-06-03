@@ -3,7 +3,7 @@ JournalApp.Collections.Posts = Backbone.Collection.extend({
   model: JournalApp.Models.Post,
 
   getOrFetch: function(id) {
-    var mod = collection.get(id)
+    var mod = this.get(id)
     if (mod) {
       mod.fetch();
     } else {

@@ -2,6 +2,8 @@ JournalApp.Views.PostsIndex = Backbone.View.extend({
   template: JST['posts/index'],
 
   initialize: function () {
+    this.collection = new JournalApp.Collections.Posts();
+    this.collection.fetch();
     this.listenTo(this.collection, "sync remove reset", this.render);
   },
 
@@ -16,23 +18,3 @@ JournalApp.Views.PostsIndex = Backbone.View.extend({
     return this;
   }
 });
-
-$(function () {
-
-
-  var newColl = new JournalApp.Collections.Posts();
-  // var postOne = new JournalApp.Models.Post({title: "1", body: "one"});
-  // postOne.save();
-  // var postTwo = new JournalApp.Models.Post({title: "2", body: "two"});
-  // postTwo.save();
-  // var postThree = new JournalApp.Models.Post({title: "3", body: "three"});
-  // postThree.save();
-  // newColl.add([postOne, postTwo, postThree]);
-  newColl.fetch({
-    success: function () {
-      var postsIdx = new JournalApp.Views.PostsIndex({collection: newColl});
-      postsIdx.render();
-    },
-    reset: true
-  });
-})

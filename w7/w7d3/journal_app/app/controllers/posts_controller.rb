@@ -7,6 +7,8 @@ class PostsController < ApplicationController
   end
 
   def show
+    @post = Post.find(params[:id])
+    render json: @post
   end
 
   def create
@@ -20,8 +22,9 @@ class PostsController < ApplicationController
 
   def destroy
     Post.find(params[:id]).destroy
+    @posts = Post.all
+    render json: @posts
   end
-
 
   private
 
