@@ -4,7 +4,7 @@ NewsReader.Models.Entry = Backbone.Model.extend({
     this.feed = options.feed;
   },
 
-  rootUrl: function () {
+  urlRoot: function () {
     this.feed.url() + '/entries';
   }
 });
