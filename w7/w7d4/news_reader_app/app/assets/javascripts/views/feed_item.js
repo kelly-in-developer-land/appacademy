@@ -1,5 +1,5 @@
-NewsReader.Views.FeedShow = Backbone.View.extend({
-  template: JST['feeds/feed_show'],
+NewsReader.Views.FeedItem = Backbone.View.extend({
+  template: JST['feeds/feed_item'],
 
   initialize: function (options) {
     this.model = options.model;
@@ -7,6 +7,7 @@ NewsReader.Views.FeedShow = Backbone.View.extend({
   },
 
   render: function () {
+    console.log(this.model.escape('title'));
     var content = this.template({ feed: this.model });
     this.$el.html(content);
 
