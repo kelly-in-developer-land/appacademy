@@ -1,0 +1,13 @@
+<form>
+  <input type="text" name="post[title]" value='<%= post.escape('title') %>'></input>
+  <br>
+  <br>
+  <textarea name="post[body]"><%= post.escape('body') %></textarea>
+  <br>
+  <input type="submit"></input>
+</form>
+
+<BR>
+
+<div class='errors'>
+</div>
