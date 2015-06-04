@@ -22,10 +22,12 @@ JournalApp.Views.PostsForm = Backbone.View.extend({
     $errorsDiv.empty();
     event.preventDefault();
     var attrs = $(event.currentTarget).serializeJSON().post;
+
     this.model.save(attrs, {
       success: function () {
-        Backbone.history.navigate(this.model.url, {trigger :true})
-      },
+        this.collection.add(this.model);
+        Backbone.history.navigate(this.model.url(), {trigger :true})
+      }.bind(this),
       error: function (model, response) {
         var errorsObj = JSON.parse(response.responseText)
         $errorsDiv.text(errorsObj.errors)
