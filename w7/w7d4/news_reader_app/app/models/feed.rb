@@ -43,6 +43,6 @@ class Feed < ActiveRecord::Base
       self.reload
     end
 
-    self.entries
+    self.entries.sort_by { |entry| entry.updated_at }
   end
 end
